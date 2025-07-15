@@ -13,7 +13,7 @@ const Recommended = () => {
           id: localStorage.getItem("id"),
           Authorization: `Bearer ${localStorage.getItem("token")}`, 
         };
-        const response = await axios.get(`http://localhost:1000/api/auth/recommend-content`, { headers });
+        const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/recommend-content`, { headers });
         setData(response.data); // 💡 this was missing!
         console.log("Recommended books:", response.data);
       } catch (error) {
