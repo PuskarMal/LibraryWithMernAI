@@ -8,7 +8,7 @@ const Wall = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const res = await axios.get('http://localhost:1000/api/auth/get-allbooks'); // Replace with your actual endpoint
+        const res = await axios.get('https://librarybackend-3-73l4.onrender.com/api/auth/get-allbooks'); // Replace with your actual endpoint
         setBooks(res.data);
       } catch (error) {
         console.error('Error fetching book wall data:', error);
