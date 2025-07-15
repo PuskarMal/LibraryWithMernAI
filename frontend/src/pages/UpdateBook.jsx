@@ -34,7 +34,7 @@ const UpdateBook = () => {
         alert("Some fields are still required");
       }
       else{
-        const response = await axios.put("http://localhost:1000/api/auth/update-book", Data, {headers});
+        const response = await axios.put("https://librarybackend-3-73l4.onrender.com/api/auth/update-book", Data, {headers});
         setData({
           url: "",
           title: "",
@@ -58,7 +58,7 @@ const UpdateBook = () => {
   };
     useEffect(() => {
       const fetch = async ()=>{
-        const response = await axios.get(`http://localhost:1000/api/auth/get-bookbyid/${id}`);
+        const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-bookbyid/${id}`);
         setData(response.data.data);
       };
       fetch();
