@@ -24,7 +24,7 @@ const Login = () => {
       if (Values.username === "" || Values.password === "")
         alert("Both fields are required");
       else {
-        const response = await axios.post("http://localhost:1000/api/auth/sign-in", Values);
+        const response = await axios.post("https://librarybackend-3-73l4.onrender.com/api/auth/sign-in", Values);
         dispatch(authActions.login());
         dispatch(authActions.changeRole(response.data.role));
         localStorage.setItem("id", response.data.id);
@@ -49,7 +49,7 @@ const Login = () => {
       const { sub: googleId, email, name, picture } = decoded;
 
       // Send the Google user details to your server for verification or sign-up
-      const response = await axios.post("http://localhost:1000/api/auth/google-login", {
+      const response = await axios.post("https://librarybackend-3-73l4.onrender.com/api/auth/google-login", {
         googleId,
         email,
         name, picture      });
