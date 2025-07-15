@@ -22,12 +22,12 @@ const AllRequests = () => {
   
   const submitChanges = async (i) => {
     const bookid = Allrequest[i]._id;
-    const response = await axios.put(`http://localhost:1000/api/auth/update-status/${bookid}`,Values,{headers});
+    const response = await axios.put(`https://librarybackend-3-73l4.onrender.com/api/auth/update-status/${bookid}`,Values,{headers});
     alert(response.data.message);
   }
   useEffect(() => {
     const fetch = async () => {
-      const response = await axios.get(`http://localhost:1000/api/auth/get-all-requested-books`,{headers});
+      const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-all-requested-books`,{headers});
       setAllrequest(response.data.data);
     };
     fetch();
