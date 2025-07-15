@@ -13,7 +13,7 @@ const Favorite = () => {
   const [Favorites, setFavorites] = useState([]);
   useEffect (() => {
     const fetch = async () => {
-      const response = await axios.get("http://localhost:1000/api/auth/get-favourites",{headers});
+      const response = await axios.get("https://librarybackend-3-73l4.onrender.com/api/auth/get-favourites",{headers});
       setFavorites(response.data.data);
     }
     fetch();
