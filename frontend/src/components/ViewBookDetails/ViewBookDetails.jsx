@@ -24,22 +24,22 @@ const ViewBookDetails = () => {
     bookid: id
   };
   const handleFavorite = async () => {
-    const response = await axios.put(`http://localhost:1000/api/auth/add-favourites`, {}, { headers });
+    const response = await axios.put(`https://librarybackend-3-73l4.onrender.com/api/auth/add-favourites`, {}, { headers });
     alert(response.data.message);
   }
   const handleRequest = async () => {
-    const response = await axios.post(`http://localhost:1000/api/auth/request-a-book`, {}, { headers });
+    const response = await axios.post(`https://librarybackend-3-73l4.onrender.com/api/auth/request-a-book`, {}, { headers });
     alert(response.data.message);
   }
   const deleteBook = async () => {
-    const response = await axios.delete("http://localhost:1000/api/auth/delete-book", { headers });
+    const response = await axios.delete("https://librarybackend-3-73l4.onrender.com/api/auth/delete-book", { headers });
     alert(response.data.message);
     navigate("/all-books");
   }
   useEffect(() => {
 
     const fetch = async () => {
-      const response = await axios.get(`http://localhost:1000/api/auth/get-bookbyid/${id}`);
+      const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-bookbyid/${id}`);
       setData(response.data.data);
     }
     fetch();
