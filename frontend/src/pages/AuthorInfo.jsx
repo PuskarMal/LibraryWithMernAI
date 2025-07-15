@@ -10,7 +10,7 @@ const AuthorInfo = () => {
     useEffect(() => { 
         const fetchAuthorData = async () => {
             try {
-                const response = await axios.get(`http://localhost:1000/api/auth/get-author-information/${id}`);
+                const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-author-information/${id}`);
                 setData(response.data.data);  // Set the API response data
                 
             } catch (error) {
