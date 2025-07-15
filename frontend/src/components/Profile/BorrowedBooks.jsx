@@ -10,13 +10,13 @@ const BorrowedBooks = () => {
   };
   useEffect (() => {
     const fetch = async () => {
-        const response = await axios.get("http://localhost:1000/api/auth/get-borrowed-books",{headers});
+        const response = await axios.get("https://librarybackend-3-73l4.onrender.com/api/auth/get-borrowed-books",{headers});
         setBorrowedBook(response.data.data);
     }
     fetch();
 },[]);
 const deleteItem = async (bookid) => {
-    const response = await axios.put(`http://localhost:1000/api/auth/book-return`,{},{headers});
+    const response = await axios.put(`https://librarybackend-3-73l4.onrender.com/api/auth/book-return`,{},{headers});
     alert(response.data.message);
     setBorrowedBook(BorrowedBook.filter(book => book.book._id !== bookid));
 }
