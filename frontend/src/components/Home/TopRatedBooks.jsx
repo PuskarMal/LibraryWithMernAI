@@ -7,7 +7,7 @@ const TopRatedBooks = () => {
     useEffect (() => {
         const fetchBooks = async () => {
             try {
-                const response = await axios.get(`http://localhost:1000/api/auth/get-top-rated-books`)
+                const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-top-rated-books`)
                 setTopRated(response.data)
             }
             catch (err) {
