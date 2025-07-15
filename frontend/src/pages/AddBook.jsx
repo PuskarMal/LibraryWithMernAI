@@ -32,7 +32,7 @@ const AddBook = () => {
           alert("Some fields are still required");
         }
         else{
-          const response = await axios.post("http://localhost:1000/api/auth/add-book", Data, {headers});
+          const response = await axios.post("https://librarybackend-3-73l4.onrender.com/api/auth/add-book", Data, {headers});
           setData({
             url: "",
             title: "",
