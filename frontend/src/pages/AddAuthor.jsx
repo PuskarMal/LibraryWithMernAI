@@ -26,7 +26,7 @@ const AddAuthor = () => {
         }
 
         const response = await axios.post(
-          "http://localhost:1000/api/auth/add-author",
+          "https://librarybackend-3-73l4.onrender.com/api/auth/add-author",
           payload,
           { headers }
         );
