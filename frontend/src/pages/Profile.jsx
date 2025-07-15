@@ -15,7 +15,7 @@ const Profile = () => {
   const [Profile, setProfile] = useState();
   useEffect(() => {
     const fetch = async () => {
-      const response = await axios.get("http://localhost:1000/api/auth/get-userinfo",{headers});
+      const response = await axios.get("https://librarybackend-3-73l4.onrender.com/api/auth/get-userinfo",{headers});
       setProfile(response.data);
     };
     fetch();
