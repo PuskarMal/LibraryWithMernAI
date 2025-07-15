@@ -20,7 +20,7 @@ const Signup = () => {
       if (Values.username === "" || Values.city === "" || Values.email === "" || Values.password === "")
         alert("All fields are required");
       else {
-        const response = await axios.post("http://localhost:1000/api/auth/sign-up", Values);
+        const response = await axios.post("https://librarybackend-3-73l4.onrender.com/api/auth/sign-up", Values);
         alert(response.data.message);
         navigate("/login");
       }
@@ -35,7 +35,7 @@ const Signup = () => {
       const { sub: googleId, email, name, picture } = decoded;
       //console.log({sub: googleId, email, name, picture})
       // Send the Google user details to your server for Google-based sign-up
-      const response = await axios.post("http://localhost:1000/api/auth/google-signup", {
+      const response = await axios.post("https://librarybackend-3-73l4.onrender.com/api/auth/google-signup", {
         googleId,
         email,
         name,
