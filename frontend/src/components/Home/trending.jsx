@@ -8,7 +8,7 @@ const Trending = () => {
     useEffect(() => { 
       
       const fetch = async () => {
-        const response = await axios.get("http://localhost:1000/api/auth/get-trending-books");
+        const response = await axios.get("https://librarybackend-3-73l4.onrender.com/api/auth/get-trending-books");
         setData(response.data);
       }
       fetch();
