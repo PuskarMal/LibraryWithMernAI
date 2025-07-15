@@ -10,11 +10,11 @@ const BookCard = ({ data, favourite }) => {
     };
 
     const handleRemove = async () => {
-        const response = await axios.put(`http://localhost:1000/api/auth/remove-favourites`, {}, { headers });
+        const response = await axios.put(`https://librarybackend-3-73l4.onrender.com/api/auth/remove-favourites`, {}, { headers });
         alert(response.data.message);
     };
     const handleClick = async () => {
-        await axios.post(`http://localhost:1000/api/auth/book-click`, {}, { headers })
+        await axios.post(`https://librarybackend-3-73l4.onrender.com/api/auth/book-click`, {}, { headers })
     }
     return (
         <div
