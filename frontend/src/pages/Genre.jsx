@@ -10,7 +10,7 @@ const Genre = () => {
         
         const fetch = async () => {
             const response = await axios.get(
-              `http://localhost:1000/api/auth/get-books-of-same-genre/${id}`
+              `https://librarybackend-3-73l4.onrender.com/api/auth/get-books-of-same-genre/${id}`
             );
             setData(response.data.data);
           };
