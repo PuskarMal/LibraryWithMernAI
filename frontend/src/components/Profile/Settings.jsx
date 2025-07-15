@@ -29,8 +29,8 @@ const Settings = () => {
 
     const handleClick = async () => {
         try {
-            const response = await axios.put("http://localhost:1000/api/auth/update-city", value, { headers });
-            const respn = await axios.put("http://localhost:1000/api/auth/update-username", values, { headers });
+            const response = await axios.put("https://librarybackend-3-73l4.onrender.com/api/auth/update-city", value, { headers });
+            const respn = await axios.put("https://librarybackend-3-73l4.onrender.com/api/auth/update-username", values, { headers });
             alert(response.data.message);
         }
         catch(error){
@@ -40,7 +40,7 @@ const Settings = () => {
 
     useEffect(() => {
         const fetch = async () => {
-            const response = await axios.get("http://localhost:1000/api/auth/get-userinfo", { headers });
+            const response = await axios.get("https://librarybackend-3-73l4.onrender.com/api/auth/get-userinfo", { headers });
             setData(response.data);
             setValue({ city: response.data.city });
             setValues({ username: response.data.username });
