@@ -13,7 +13,7 @@ export default class Forgot extends Component {
     console.log(email);
     const fetch = async () => {
       try {
-        const response = await axios.post("http://localhost:1000/api/auth/forgot-password", {email});
+        const response = await axios.post("https://librarybackend-3-73l4.onrender.com/api/auth/forgot-password", {email});
         const data = response.data.status; // Extract the data from the response
         alert(data);
       } catch (error) {
