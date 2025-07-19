@@ -9,7 +9,7 @@ const AuthorSpotlight = () => {
   useEffect(() => {
     const fetchAuthor = async () => {
       try {
-        const res = await axios.get("https://librarybackend-3-73l4.onrender.com/api/auth/author-spotlight"); // Replace with your API
+        const res = await axios.get("https://librarybackend-3-73l4.onrender.com/api/auth/author-spotlight");
         setAuthor(res.data);
       } catch (error) {
         console.error('Error fetching author:', error);
