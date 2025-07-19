@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Search from "../Searchbar/Search";
 const Hero = () => {
-    return (<div className="h-[75vh] flex flex-col md:flex-row items-center justify-center">
+    return (<div className="h-[95vh] md:h-[80vh] flex flex-col md:flex-row items-center justify-center">
         
         <div className="w:full mb-12 md:mb-0 lg:w-3/6 flex flex-col items-center lg:items-start justify-center">
          
