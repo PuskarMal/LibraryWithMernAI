@@ -29,7 +29,8 @@ const recommended = () => {
   
   if (!Data) {
     return (<div className="flex items-center justify-center my-8">
-      <Loader />{" "}
+      <h4 className="text-3xl text-yellow-100 mb-6">Recommended for you</h4>
+      Get started by Loging In & Browse.
     </div>);
   }
   if(Data.length == 0){
