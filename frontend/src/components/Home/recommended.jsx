@@ -33,7 +33,10 @@ const recommended = () => {
     </div>);
   }
   if(Data.length == 0){
-    return<div>No recommendations found. Browse books.</div>;
+    return(<div>
+      <h4 className="text-3xl text-yellow-100 mb-6">Recommended for you</h4>
+      No recommendations found. Browse books.
+    </div>);
   }
 
   
