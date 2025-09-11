@@ -30,6 +30,9 @@ const recommended = () => {
   if (!Data) {
     return <div>No recommendations found. Browse books.</div>;
   }
+  if(Data.length == 0){
+    return<div>No recommendations found. Browse books.</div>;
+  }
 
   
 
