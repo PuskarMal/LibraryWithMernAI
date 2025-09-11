@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Loader from "../Loader/Loader";
 import axios from "axios";
 import BookCard from "../BookCard/BookCard";
-import TopRatedBooks from "./TopRatedBooks";
+
 const RecentBooks = () => {
   const [Data, setData] = useState(null); // initial null
 
