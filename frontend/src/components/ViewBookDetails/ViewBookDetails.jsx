@@ -63,7 +63,7 @@ return (
             {isLoggedIn && role === "user" && (
               <div className="flex lg:flex-col flex-row gap-4 lg:gap-6 items-center justify-center">
                 <button
-                  className="bg-transparent rounded-full text-red-500 text-3xl p-3 flex items-center justify-center hover:bg-red-100 transition-all"
+                  className="bg-white rounded-full text-red-500 text-3xl p-3 flex items-center justify-center hover:bg-red-100 transition-all"
                   onClick={handleFavorite}
                 >
                   <FaHeart />
