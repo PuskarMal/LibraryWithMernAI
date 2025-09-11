@@ -48,3 +48,4 @@ const Recommended = () => {
     </div>
   );
 };
+export default recommended;
