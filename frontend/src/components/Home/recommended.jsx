@@ -26,7 +26,7 @@ const Recommended = () => {
 
   return (
   <div className="mt-16 ">
-    {!Data ? (
+    {!Data || Data.length === 0 ? (
       <div><Loader /></div>
     ) : (
       <div>
