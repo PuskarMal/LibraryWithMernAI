@@ -18,7 +18,7 @@ const Recommended = () => {
           { headers }
         );
         setData(response.data);
-        console.log("Recommended books:", response.data);
+        console.log("Recommended books:", response.data.length);
       } catch (error) {
         console.error("Error fetching recommendations", error);
       }
