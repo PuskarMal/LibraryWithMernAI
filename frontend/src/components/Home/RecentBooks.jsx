@@ -9,11 +9,7 @@ const Recommended = () => {
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
-        const headers = {
-          id: localStorage.getItem("id"),
-          Authorization: `Bearer ${localStorage.getItem("token")}`, 
-        };
-        const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-recentbooks`, { headers });
+        const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-recentbooks`);
         setData(response.data); // 💡 this was missing!
         
       } catch (error) {
