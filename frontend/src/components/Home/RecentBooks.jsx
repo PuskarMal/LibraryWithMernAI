@@ -3,11 +3,11 @@ import Loader from "../Loader/Loader";
 import axios from "axios";
 import BookCard from "../BookCard/BookCard";
 import TopRatedBooks from "./TopRatedBooks";
-const Recommended = () => {
+const RecentBooks = () => {
   const [Data, setData] = useState(null); // initial null
 
   useEffect(() => {
-    const fetchRecommendations = async () => {
+    const fetchRecentBooks = async () => {
       try {
         const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-recentbooks`);
         setData(response.data); // 💡 this was missing!
@@ -17,7 +17,7 @@ const Recommended = () => {
       }
     };
 
-    fetchRecommendations();
+    fetchRecentBooks();
   }, []);
 
   return (
@@ -42,4 +42,4 @@ const Recommended = () => {
 
 };
 
-export default Recommended;
+export default RecentBooks;
