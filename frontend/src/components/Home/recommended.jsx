@@ -28,7 +28,7 @@ const Recommended = () => {
   <div className="mt-16 ">
     {!Data  ? (
       <div><Loader /></div>
-    ) : Data.length === 0 ? <div><div/> : (
+    ) : Data.length === 0 ? <div>Hi<div/> : (
       <div>
         <h4 className="text-3xl text-yellow-100 mb-6">Recommended for you</h4>
         <div className="my-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
