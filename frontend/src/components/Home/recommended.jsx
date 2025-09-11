@@ -28,7 +28,9 @@ const recommended = () => {
   }, []);
   
   if (!Data) {
-    return <div>No recommendations found. Browse books.</div>;
+    return (<div className="flex items-center justify-center my-8">
+      <Loader />{" "}
+    </div>);
   }
   if(Data.length == 0){
     return<div>No recommendations found. Browse books.</div>;
