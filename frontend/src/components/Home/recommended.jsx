@@ -26,14 +26,14 @@ const Recommended = () => {
 
     fetchRecommendations();
   }, []);
-
+  if (Data.length === 0) {
+    return <div>No recommendations found. Browse books.</div>;
+  }
   if (!Data) {
     return <Loader />;
   }
 
-  if (Data.length === 0) {
-    return <div>No recommendations found. Browse books.</div>;
-  }
+  
 
   return (
     <div className="mt-16">
