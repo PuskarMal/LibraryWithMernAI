@@ -26,11 +26,9 @@ const recommended = () => {
 
     fetchRecommendations();
   }, []);
-  if (Data.length === 0) {
-    return <div>No recommendations found. Browse books.</div>;
-  }
+  
   if (!Data) {
-    return <Loader />;
+    return <div>No recommendations found. Browse books.</div>;
   }
 
   
