@@ -3,7 +3,7 @@ import Loader from "../Loader/Loader";
 import axios from "axios";
 import BookCard from "../BookCard/BookCard";
 
-const Recommended = () => {
+const recommended = () => {
   const [Data, setData] = useState(null);
 
   useEffect(() => {
@@ -48,4 +48,4 @@ const Recommended = () => {
     </div>
   );
 };
-export default Recommended;
+export default recommended;
