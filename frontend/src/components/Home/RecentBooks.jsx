@@ -13,9 +13,9 @@ const Recommended = () => {
           id: localStorage.getItem("id"),
           Authorization: `Bearer ${localStorage.getItem("token")}`, 
         };
-        const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/recommend-content`, { headers });
+        const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-recentbooks`, { headers });
         setData(response.data); // 💡 this was missing!
-        console.log("Recommended books:", response.data);
+        
       } catch (error) {
         console.error("Error fetching recommendations", error);
       }
