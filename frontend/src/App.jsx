@@ -23,6 +23,7 @@ import AuthorInfo from "./pages/AuthorInfo";
 import ResetPassword from "./pages/ResetPassword";
 import Genre from "./pages/Genre";
 import AddAuthor from "./pages/AddAuthor";
+import ScrollToTop from "./scrollToTop";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const App = () => {
       
         <Navbar />
         <Routes>
+          <ScrollToTop/>
           <Route path="/" element={<Home />} />
           <Route path="/all-books" element={<AllBooks />} />
           <Route path="/author-information/:id" element={<AuthorInfo />} />
