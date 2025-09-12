@@ -154,26 +154,31 @@ router.get("/recommend-content", authenticateToken, async (req, res) => {
 
 router.get("/get-allbooks", async (req, res) => {
   const { search } = req.query;
+
   try {
-    const books = await Book.find();
+    const books = await Book.find({ _id: { $exists: true }, title: { $exists: true } });
 
     if (!search) return res.json(books);
 
-    const options = {
-      keys: ['title', 'author'],
-      threshold: 0.4, // lower = stricter match, higher = fuzzier
-    };
+    const searchLower = search.toLowerCase();
 
-    const fuse = new Fuse(books, options);
-    const results = fuse.search(search);
-    const matchedBooks = results.map(result => result.item);
+    const matchedBooks = books
+      .map(book => {
+        const titleScore = natural.JaroWinklerDistance(book.title.toLowerCase(), searchLower);
+        const authorScore = natural.JaroWinklerDistance(book.author.toLowerCase(), searchLower);
+        console.log({ title: book.title, titleScore, authorScore });
+        return { book, score: Math.max(titleScore, authorScore) };
+      })
+      .filter(item => item.score > 0.7) // Adjust threshold for similarity
+      .sort((a, b) => b.score - a.score) // Highest score (best match) first
+      .map(item => item.book);
 
     res.json(matchedBooks);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 router.get("/get-recentbooks", async (req,res) => {
     try{
         const books = await Book.find().sort({ createdAt: -1 }).limit(5)
