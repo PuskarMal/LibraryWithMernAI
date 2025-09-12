@@ -24,14 +24,13 @@ const Genre = () => {
           <Loader />
         </div>
       )}
-      <div className="mt-12 my-8 grid grid-cols-5">
-        {Data &&
-          Data.map((item, i) => (
-            <div key={i} className="shadow-lg rounded-lg flex text-center mb-5 justify-center">
-              <BookCard data={item} />
-            </div>
-          ))}
+      <div className="my-8 grid grid-cols-1 text-white sm:grid-cols-3 md:grid-cols-5 gap-8">
+      {Data && Data.map((items,i) => (
+      <div key={i}>
+        <BookCard data={items} />{" "} 
       </div>
+    ))}
+    </div>
     </div>
   )
 }
