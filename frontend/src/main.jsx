@@ -5,7 +5,7 @@ import './index.css'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from "react-redux"
 import store from './store/index.js'
-import ScrollToTop from './scrollToTop';
+import ScrollToTop from './scrollToTop.jsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
