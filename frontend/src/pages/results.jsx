@@ -5,40 +5,49 @@ import { Link } from "react-router-dom";
 import ViewBookDetails from "../components/ViewBookDetails/ViewBookDetails";
 import SearchIcon from "@mui/icons-material/Search";
 import Search from "../components/Searchbar/Search";
+import Loader from "../components/Loader/Loader";
 const Results = () => {
     const location = useLocation();
     
     const [searchResults, setSearchResults] = useState([]);
+    const [loading, setLoading] = useState(false);
     const searchQuery = location.state?.search || "";
-    
+    console.log("Search Query:", searchQuery);
     useEffect(() => {
         if (searchQuery) {
             const fetchSearchResults = async () => {
+                setLoading(true);
                 try {
-                    const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-allbooks?search=${searchQuery}`);
+                    const response = await axios.get(`http://localhost:1000/api/auth/get-allbooks?search=${searchQuery}`);
                     const advancedResponse = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/advanced-search?q=${searchQuery}`);
-                    if(response.data.length === 0)
+                    if(response.data.length === 0){
+                    
                     setSearchResults(advancedResponse.data);
-                    else
-                    console.log(response);
+                    }
+                    else{
+                    
                     setSearchResults(response.data)
+                    }
                 } catch (error) {
                     console.error("Error fetching search results:", error);
                 }
+                setLoading(false);
             };
             fetchSearchResults();
         }
     }, [searchQuery]);
 
     // ...existing code...
-console.log("Search Results:", searchResults);
+//console.log("Search Results:", searchResults);
 
 return (
     <div className="bg-zinc-900 h-auto min-h-screen">
         <div className="pt-5 pr-80 outline-none"><Search/></div>
         <div className="lg:ml-60 pt-5">
             <h1 className="text-xl lg:mt-0 mt-20 text-zinc-300 pl-5 mb-3 lg:ml-0">Search Results for "{searchQuery}"</h1>
-            {searchResults && searchResults.length > 0 ? (
+            {loading ? 
+            <div className="flex justify-center items-center"><Loader /></div> : 
+            searchResults && searchResults.length > 0 ? (
                 <ul className="pb-4 px-2 lg:ml-30">
                     {searchResults.filter(item => item && item._id).map((item, i) => (
                         <div key={i} className="ml-0 p-5 lg:w-[80%] bg-zinc-800 rounded-md flex flex-col lg:flex-row text-zinc-200">
