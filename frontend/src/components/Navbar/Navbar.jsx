@@ -41,11 +41,13 @@ const Navbar = () => {
     <>
   <nav className="relative z-50 flex bg-zinc-800 text-white px-8 py-4 items-center justify-between">
     <div className="flex items-center">
+        <a href="https://rainbow-maamoul-1ebe75.netlify.app/">
         <img className="h-10 me-4"
             src ="https://cdn-icons-png.flaticon.com/128/10433/10433049.png"
             alt="logo"
         />
-        <h1 className="text-2xl font-semibold">BookVenture</h1>
+        </a>
+        <a className="text-2xl font-semibold" href="https://rainbow-maamoul-1ebe75.netlify.app/">BookVenture</a>
     </div>
     <div className="nav-links block md:flex items-center gap-4">
         <div className="hidden md:flex gap-4">
