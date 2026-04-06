@@ -107,51 +107,76 @@ router.post('/book-click', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+function addDocumentAndGetVector(text) {
+ 	const tfidfModel.addDocument(text);
+ 	const termWeights = tfidfModel.listTerms(tfidfModel.documents.length - 1).reduce((acc, cur) => {
+ 	acc[cur.term] = cur.tfidf;
+ 	return acc;
+ }, {});
+ return tfidfModel.vocabulary.map(term => termWeights[term] || 0);
+}
+router.get("/recommend-content-enhanced", authenticateToken, async (req, res) => {
+ try {
+ if (!tfidfModel) {
+ await initializeTfidfModel();
+ }
 
-router.get("/recommend-content", authenticateToken, async (req, res) => {
-  try {
-    const {id} = req.headers
-    const user = await User.findById(id).populate("favourites");
-    if (!user || user.favourites.length === 0) return res.json([]);
-    const allBooks = await Book.find();
-    const referenceBook = user.favourites[user.favourites.length - 1];
-    const corpus = allBooks.map(book => book.desc);
-    const tfidf = new natural.TfIdf();
-    corpus.forEach(doc => tfidf.addDocument(doc));
-    const referenceText = referenceBook.desc;
-    // Build a common vocabulary across the corpus
-    const vocabulary = new Set();
-    for (let i = 0; i < allBooks.length; i++) {
-      tfidf.listTerms(i).forEach(term => vocabulary.add(term.term));
-    }
-    const vocabArray = Array.from(vocabulary);
-    // Helper: get vector from a document index
-    const getVector = (docIndex) => {
-      const termWeights = tfidf.listTerms(docIndex).reduce((acc, cur) => {
-        acc[cur.term] = cur.tfidf;
-        return acc;
-      }, {});
-      return vocabArray.map(term => termWeights[term] || 0);
-    };
-    // Add reference doc at the end for consistent indexing
-    tfidf.addDocument(referenceText);
-    const refVector = getVector(tfidf.documents.length - 1);
-    const recommendations = allBooks
-      .filter(book => !user.favourites.some(liked => liked._id.equals(book._id)))
-      .map((book, index) => {
-        const vec = getVector(index);
-        const sim = cosineSimilarity(refVector, vec);
-        return { book, score: sim };
-      })
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
-    res.status(200).json(recommendations.map(r => r.book));
-  } catch (err) {
-    console.error("TF-IDF recommend error:", err);
-    res.status(500).json({ message: "Recommendation failed", error: err });
-  }
+ const {id} = req.headers;
+ const user = await User.findById(id).populate("favourites");
+ 
+ if (!user || user.favourites.length === 0) {
+ return res.json([]);
+ }
+
+ // Get reference book and validate it exists in our corpus
+ const referenceBook = user.favourites[user.favourites.length - 1];
+ const referenceText = referenceBook.desc;
+
+ // Try to find the reference book in our pre-built book list
+ const referenceBookIndex = tfidfModel.books.findIndex(book => 
+ book._id.toString() === referenceBook._id.toString()
+ );
+
+ if (referenceBookIndex === -1) {
+ // Reference book not found in corpus, return empty recommendations
+ return res.json([]);
+ }
+
+ // Create a temporary TF-IDF document for the reference text
+ // We'll rebuild the model with this reference document
+ const tempTfidf = new natural.TfIdf();
+ const corpus = [...tfidfModel.books.map(book => book.desc)];
+ corpus.push(referenceText);
+ 
+ // Add all documents
+ corpus.forEach(doc => tempTfidf.addDocument(doc));
+ 
+ // Create vector for reference document
+ const refTermWeights = tempTfidf.listTerms(tempTfidf.documents.length - 1).reduce((acc, cur) => {
+ acc[cur.term] = cur.tfidf;
+ return acc;
+ }, {});
+ 
+ const refVector = tfidfModel.vocabulary.map(term => refTermWeights[term] || 0);
+ 
+ // Calculate similarities
+ const userFavourites = new Set(user.favourites.map(f => f._id.toString()));
+ const recommendations = tfidfModel.books
+ .filter(book => !userFavourites.has(book._id.toString()))
+ .map((book) => {
+ const bookVector = tfidfModel.bookVectors[tfidfModel.books.indexOf(book)];
+ const sim = cosineSimilarity(refVector, bookVector);
+ return { book, score: sim };
+ })
+ .sort((a, b) => b.score - a.score)
+ .slice(0, 5);
+ 
+ res.status(200).json(recommendations.map(r => r.book));
+ } catch (err) {
+ console.error("Enhanced recommend error:", err);
+ res.status(500).json({ message: "Recommendation failed", error: err });
+ }
 });
-
 router.get("/get-allbooks", async (req, res) => {
   const { search } = req.query;
 
@@ -343,57 +368,4 @@ router.get('/admin/search-stats', async (req, res) => {
     res.status(500).json({ message: "Error fetching stats", error: err });
   }
 });
-// router.get('/advanced-search', async (req, res) => {
-//   try {
-//     const { q } = req.query;
-//     if (!q || q.trim().length === 0) {
-//       return res.status(400).json({ message: "Query string is empty" });
-//     }
-
-//     const books = await Book.find();
-//     const corpus = books.map(book => book.desc);
-//     const tfidf = new natural.TfIdf();
-//     corpus.forEach(doc => tfidf.addDocument(doc));
-
-//     // Build vocabulary from all books
-//     const vocabulary = new Set();
-//     for (let i = 0; i < books.length; i++) {
-//       tfidf.listTerms(i).forEach(term => vocabulary.add(term.term));
-//     }
-//     const vocabArray = Array.from(vocabulary);
-
-//     // Helper function to get vector from tfidf listTerms
-//     const getVector = (docIndex) => {
-//       const termWeights = tfidf.listTerms(docIndex).reduce((acc, cur) => {
-//         acc[cur.term] = cur.tfidf;
-//         return acc;
-//       }, {});
-//       return vocabArray.map(term => termWeights[term] || 0);
-//     };
-
-//     // Add the search query as a document to the TF-IDF
-//     tfidf.addDocument(q);
-//     const queryVector = getVector(tfidf.documents.length - 1);
-
-//     // Calculate cosine similarity between query and all books
-//     const results = books.map((book, index) => {
-//       const bookVector = getVector(index);
-//       const sim = cosineSimilarity(queryVector, bookVector);
-//       return { book, score: sim };
-//     });
-
-//     const sortedResults = results
-//   .filter(r => r.score > 0.1)  // filter out unrelated results
-//   .sort((a, b) => b.score - a.score)
-//   .slice(0, 10)
-//   .map(r => r.book);
-
-
-//     res.json(sortedResults);
-//   } catch (err) {
-//     console.error("Search error:", err);
-//     res.status(500).json({ message: "Search failed", error: err });
-//   }
-// });
-
-// module.exports = router
+module.exports = router
