@@ -18,7 +18,7 @@ const Results = () => {
             const fetchSearchResults = async () => {
                 setLoading(true);
                 try {
-                    const response = await axios.get(`http://localhost:1000/api/auth/get-allbooks?search=${searchQuery}`);
+                    const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-allbooks?search=${searchQuery}`);
                     const advancedResponse = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/advanced-search?q=${searchQuery}`);
                     if(response.data.length === 0){
                     
