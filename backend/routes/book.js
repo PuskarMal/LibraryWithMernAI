@@ -114,11 +114,11 @@ router.get("/recommend-content", authenticateToken, async (req, res) => {
     const user = await User.findById(id).populate("favourites");
     if (!user || user.favourites.length === 0) return res.json([]);
     const allBooks = await Book.find();
-    const referenceBook = user.favourites[user.favourites.length - 1];
+    const lastTwoFavs = user.favourites.slice(-2);
+    const referenceText = lastTwoFavs.map(book => book.desc).join(" ");
     const corpus = allBooks.map(book => book.desc);
     const tfidf = new natural.TfIdf();
     corpus.forEach(doc => tfidf.addDocument(doc));
-    const referenceText = referenceBook.desc;
     // Build a common vocabulary across the corpus
     const vocabulary = new Set();
     for (let i = 0; i < allBooks.length; i++) {
