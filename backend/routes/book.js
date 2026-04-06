@@ -224,52 +224,82 @@ router.get('/get-top-rated-books', async (req, res) => {
     res.status(500).json({ error: err });
   }
 });
+// Global variable to store the TF-IDF model (singleton pattern)
+let tfidfModel = null;
 
+// Function to initialize/pre-build the TF-IDF model
+async function initializeTfidfModel() {
+  try {
+    console.log("Initializing TF-IDF model...");
+    const books = await Book.find();
+    const corpus = books.map(book => book.desc);
+    
+    tfidfModel = new natural.TfIdf();
+    corpus.forEach(doc => tfidfModel.addDocument(doc));
+    
+    // Build and store vocabulary
+    const vocabulary = new Set();
+    for (let i = 0; i < books.length; i++) {
+      tfidfModel.listTerms(i).forEach(term => vocabulary.add(term.term));
+    }
+    tfidfModel.vocabulary = Array.from(vocabulary); // Store vocabulary
+    
+    // Pre-compute vectors for all books (optional but faster for repeated searches)
+    tfidfModel.bookVectors = books.map((_, index) => {
+      const termWeights = tfidfModel.listTerms(index).reduce((acc, cur) => {
+        acc[cur.term] = cur.tfidf;
+        return acc;
+      }, {});
+      return tfidfModel.vocabulary.map(term => termWeights[term] || 0);
+    });
+    
+    tfidfModel.books = books; // Store book references
+    tfidfModel.vocabularySize = tfidfModel.vocabulary.length;
+    
+    console.log(`TF-IDF model initialized with ${books.length} books and ${tfidfModel.vocabularySize} unique terms`);
+    return tfidfModel;
+  } catch (err) {
+    console.error("Error initializing TF-IDF model:", err);
+    throw err;
+  }
+}
+
+// API endpoint that uses the pre-built model
 router.get('/advanced-search', async (req, res) => {
   try {
+    // Check if model is initialized, if not, initialize it
+    if (!tfidfModel) {
+      await initializeTfidfModel();
+    }
+
     const { q } = req.query;
     if (!q || q.trim().length === 0) {
       return res.status(400).json({ message: "Query string is empty" });
     }
 
-    const books = await Book.find();
-    const corpus = books.map(book => book.desc);
-    const tfidf = new natural.TfIdf();
-    corpus.forEach(doc => tfidf.addDocument(doc));
-
-    // Build vocabulary from all books
-    const vocabulary = new Set();
-    for (let i = 0; i < books.length; i++) {
-      tfidf.listTerms(i).forEach(term => vocabulary.add(term.term));
-    }
-    const vocabArray = Array.from(vocabulary);
-
-    // Helper function to get vector from tfidf listTerms
-    const getVector = (docIndex) => {
-      const termWeights = tfidf.listTerms(docIndex).reduce((acc, cur) => {
-        acc[cur.term] = cur.tfidf;
-        return acc;
-      }, {});
-      return vocabArray.map(term => termWeights[term] || 0);
-    };
-
-    // Add the search query as a document to the TF-IDF
-    tfidf.addDocument(q);
-    const queryVector = getVector(tfidf.documents.length - 1);
-
-    // Calculate cosine similarity between query and all books
-    const results = books.map((book, index) => {
-      const bookVector = getVector(index);
+    // Add query to the existing TF-IDF model
+    tfidfModel.addDocument(q);
+    
+    // Convert query to vector using pre-built vocabulary
+    const termWeights = tfidfModel.listTerms(tfidfModel.documents.length - 1).reduce((acc, cur) => {
+      acc[cur.term] = cur.tfidf;
+      return acc;
+    }, {});
+    
+    const queryVector = tfidfModel.vocabulary.map(term => termWeights[term] || 0);
+    
+    // Calculate cosine similarity using pre-computed book vectors
+    const results = tfidfModel.books.map((book, index) => {
+      const bookVector = tfidfModel.bookVectors[index];
       const sim = cosineSimilarity(queryVector, bookVector);
       return { book, score: sim };
     });
 
     const sortedResults = results
-  .filter(r => r.score > 0.1)  // filter out unrelated results
-  .sort((a, b) => b.score - a.score)
-  .slice(0, 10)
-  .map(r => r.book);
-
+      .filter(r => r.score > 0.1)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10)
+      .map(r => r.book);
 
     res.json(sortedResults);
   } catch (err) {
@@ -278,4 +308,92 @@ router.get('/advanced-search', async (req, res) => {
   }
 });
 
-module.exports = router
+// Optional: Endpoint to refresh/rebuild the model (useful when books are updated)
+router.post('/admin/refresh-search-index', async (req, res) => {
+  try {
+    tfidfModel = null; // Clear existing model
+    await initializeTfidfModel();
+    res.json({ message: "Search index refreshed successfully" });
+  } catch (err) {
+    console.error("Error refreshing search index:", err);
+    res.status(500).json({ message: "Failed to refresh search index", error: err });
+  }
+});
+
+// Optional: Get model statistics
+router.get('/admin/search-stats', async (req, res) => {
+  try {
+    if (!tfidfModel) {
+      return res.json({ 
+        status: "Not initialized",
+        initialized: false,
+        books: 0,
+        vocabularySize: 0
+      });
+    }
+    
+    res.json({
+      status: "Initialized",
+      initialized: true,
+      books: tfidfModel.books.length,
+      vocabularySize: tfidfModel.vocabularySize,
+      documentsInModel: tfidfModel.documents.length
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching stats", error: err });
+  }
+});
+// router.get('/advanced-search', async (req, res) => {
+//   try {
+//     const { q } = req.query;
+//     if (!q || q.trim().length === 0) {
+//       return res.status(400).json({ message: "Query string is empty" });
+//     }
+
+//     const books = await Book.find();
+//     const corpus = books.map(book => book.desc);
+//     const tfidf = new natural.TfIdf();
+//     corpus.forEach(doc => tfidf.addDocument(doc));
+
+//     // Build vocabulary from all books
+//     const vocabulary = new Set();
+//     for (let i = 0; i < books.length; i++) {
+//       tfidf.listTerms(i).forEach(term => vocabulary.add(term.term));
+//     }
+//     const vocabArray = Array.from(vocabulary);
+
+//     // Helper function to get vector from tfidf listTerms
+//     const getVector = (docIndex) => {
+//       const termWeights = tfidf.listTerms(docIndex).reduce((acc, cur) => {
+//         acc[cur.term] = cur.tfidf;
+//         return acc;
+//       }, {});
+//       return vocabArray.map(term => termWeights[term] || 0);
+//     };
+
+//     // Add the search query as a document to the TF-IDF
+//     tfidf.addDocument(q);
+//     const queryVector = getVector(tfidf.documents.length - 1);
+
+//     // Calculate cosine similarity between query and all books
+//     const results = books.map((book, index) => {
+//       const bookVector = getVector(index);
+//       const sim = cosineSimilarity(queryVector, bookVector);
+//       return { book, score: sim };
+//     });
+
+//     const sortedResults = results
+//   .filter(r => r.score > 0.1)  // filter out unrelated results
+//   .sort((a, b) => b.score - a.score)
+//   .slice(0, 10)
+//   .map(r => r.book);
+
+
+//     res.json(sortedResults);
+//   } catch (err) {
+//     console.error("Search error:", err);
+//     res.status(500).json({ message: "Search failed", error: err });
+//   }
+// });
+
+// module.exports = router
