@@ -115,7 +115,7 @@ function addDocumentAndGetVector(text) {
  }, {});
  return tfidfModel.vocabulary.map(term => termWeights[term] || 0);
 }
-router.get("/recommend-content-enhanced", authenticateToken, async (req, res) => {
+router.get("/recommend-book", authenticateToken, async (req, res) => {
  try {
  if (!tfidfModel) {
  await initializeTfidfModel();
