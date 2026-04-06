@@ -31,8 +31,8 @@ const Search = () => {
     if (search !== "") {
         const fetchBooks = async () => {
             try {
-                const response = await axios.get(`http://localhost:1000/api/auth/get-allbooks?search=${search}`);
-                const advancedResponse = await axios.get(`http://localhost:1000/api/auth/advanced-search?q=${search}`);
+                const response = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/get-allbooks?search=${search}`);
+                const advancedResponse = await axios.get(`https://librarybackend-3-73l4.onrender.com/api/auth/advanced-search?q=${search}`);
 
                 if (response.data.length === 0) {
                     console.log("Fallback to advanced NLP search");
